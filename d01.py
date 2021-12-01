@@ -11,9 +11,10 @@ def parse(data):
 
 def increases(report, n):
     increases = 0
-    prev = 0
-    for curr in range(1, len(report) - n + 1):
-        increases += sum(report[curr:curr+n]) > sum(report[prev:prev+n])
+    prev = sum(report[:n])
+    for i in range(1, len(report) - n + 1):
+        curr = sum(report[i:i+n])
+        increases += curr > prev
         prev = curr
     return increases
 
