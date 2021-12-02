@@ -3,25 +3,49 @@
 """Advent of Code 2021, Day 2"""
 
 from aoc import solve
-from vec2 import Vec2
 
-dirs = {
-    'forward': Vec2(1, 0),
-    'up': Vec2(0, -1),
-    'down': Vec2(0, 1)
-}
+
+class Sub1:
+    def __init__(slf):
+        slf.pos = 0
+        slf.depth = 0
+
+    def forward(slf, n):
+        slf.pos += n
+
+    def up(slf, n):
+        slf.depth -= n
+
+    def down(slf, n):
+        slf.depth += n
+
+
+class Sub2:
+    def __init__(slf):
+        slf.pos = 0
+        slf.depth = 0
+        slf.aim = 0
+
+    def forward(slf, n):
+        slf.pos += n
+        slf.depth += n * slf.aim
+
+    def up(slf, n):
+        slf.aim -= n
+
+    def down(slf, n):
+        slf.aim += n
 
 
 def parse(data):
-    for line in data.split('\n'):
-        a, b = line.split(' ')
-        yield dirs[a] * int(b)
+    return [line.split(' ') for line in data.split('\n')]
 
 
-def plot_course(course):
-    pos = sum(course, Vec2(0, 0))
-    return pos.x * pos.y
+def plot_course(course, sub):
+    for instr, n in course:
+        getattr(sub, instr)(int(n))
+    return sub.pos * sub.depth
 
 
 if __name__ == "__main__":
-    solve(2, parse, plot_course)
+    solve(2, parse, lambda x: plot_course(x, Sub1()), lambda x: plot_course(x, Sub2()))
