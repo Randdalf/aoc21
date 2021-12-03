@@ -4,7 +4,7 @@
 
 import unittest
 
-from d03 import parse, power_consumption
+from d03 import parse, power_consumption, life_support
 
 example1 = """00100
 11110
@@ -23,6 +23,11 @@ example1 = """00100
 class PowerConsumptionTests(unittest.TestCase):
     def test_example1(slf):
         slf.assertEqual(power_consumption(parse(example1)), 198)
+
+
+class LifeSupportTests(unittest.TestCase):
+    def test_example1(slf):
+        slf.assertEqual(life_support(parse(example1)), 230)
 
 
 if __name__ == "__main__":
