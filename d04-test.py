@@ -4,7 +4,7 @@
 
 import unittest
 
-from d04 import parse, bingo
+from d04 import parse, bingo_first, bingo_last
 
 example1 = """7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 
@@ -27,9 +27,14 @@ example1 = """7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,
  2  0 12  3  7"""
 
 
-class BingoTests(unittest.TestCase):
+class BingoFirstTests(unittest.TestCase):
     def test_example1(slf):
-        slf.assertEqual(bingo(parse(example1)), 4512)
+        slf.assertEqual(bingo_first(parse(example1)), 4512)
+
+
+class BingoLastTests(unittest.TestCase):
+    def test_example1(slf):
+        slf.assertEqual(bingo_last(parse(example1)), 1924)
 
 
 if __name__ == "__main__":
