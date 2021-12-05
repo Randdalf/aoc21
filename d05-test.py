@@ -19,8 +19,11 @@ example1 = """0,9 -> 5,9
 
 
 class OverlapsTests(unittest.TestCase):
-    def test_example1(slf):
-        slf.assertEqual(overlaps(parse(example1)), 5)
+    def test_example1_1(slf):
+        slf.assertEqual(overlaps(parse(example1), False), 5)
+
+    def test_example1_2(slf):
+        slf.assertEqual(overlaps(parse(example1), True), 12)
 
 
 if __name__ == "__main__":
