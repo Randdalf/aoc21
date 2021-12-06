@@ -14,7 +14,7 @@ class SimulateTests(unittest.TestCase):
         slf.assertEqual(simulate(parse(example1), 80), 5934)
 
     def test_example1_256(slf):
-        slf.assertEqual(simulate(parse(example1), 256), 5934)
+        slf.assertEqual(simulate(parse(example1), 256), 26984457539)
 
 
 if __name__ == "__main__":
