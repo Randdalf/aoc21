@@ -12,7 +12,7 @@ def parse(data):
     return state
 
 
-def simulate(state, days=80):
+def simulate(state, days):
     for day in range(days):
         state[7] += state[0]
         state = state[1:] + state[:1]
@@ -20,4 +20,4 @@ def simulate(state, days=80):
 
 
 if __name__ == "__main__":
-    solve(6, parse, simulate)
+    solve(6, parse, lambda x: simulate(x, 80), lambda x: simulate(x, 256))
