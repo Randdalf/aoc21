@@ -4,7 +4,7 @@
 
 import unittest
 
-from d08 import parse, easy_digits
+from d08 import parse, easy_digits, sum_outputs
 
 example1 = "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"
 example2 = """be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
@@ -25,6 +25,14 @@ class EasyDigitsTests(unittest.TestCase):
 
     def test_example2(slf):
         slf.assertEqual(easy_digits(parse(example2)), 26)
+
+
+class SumOutputsTests(unittest.TestCase):
+    def test_example1(slf):
+        slf.assertEqual(sum_outputs(parse(example1)), 5353)
+
+    def test_example2(slf):
+        slf.assertEqual(sum_outputs(parse(example2)), 61229)
 
 
 if __name__ == "__main__":
