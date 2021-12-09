@@ -52,7 +52,7 @@ def largest_basins(heightmap):
         while len(open) > 0:
             x, y, height = open.pop()
             for neighbor in heightmap.neighbors(x, y):
-                if neighbor[2] < 9 and neighbor[2] > height and neighbor not in basin:
+                if neighbor[2] < 9 and neighbor[2] > height:
                     open.add(neighbor)
             basin.add((x, y, height))
         basins.append(len(basin))
