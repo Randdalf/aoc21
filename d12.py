@@ -32,21 +32,22 @@ def parse(data):
 
 def passages(caves, slot='unused'):
     start = caves['start']
-    prev = [([start], {start}, slot)]
+    end = caves['end']
+    prev = [(start, {start}, slot)]
     closed = []
     while len(prev) > 0:
         open = []
-        for path, visited, slot in prev:
-            for neighbor in path[-1].neighbors:
+        for head, visited, slot in prev:
+            for neighbor in head.neighbors:
                 passage = None
                 if neighbor.big:
-                    passage = (path + [neighbor], visited, slot)
+                    passage = (neighbor, visited, slot)
                 elif neighbor not in visited:
-                    passage = (path + [neighbor], visited | {neighbor}, slot)
+                    passage = (neighbor, visited | {neighbor}, slot)
                 elif neighbor != start and slot is None:
-                    passage = (path + [neighbor], visited | {neighbor}, neighbor)
+                    passage = (neighbor, visited | {neighbor}, neighbor)
                 if passage:
-                    if neighbor.name == 'end':
+                    if neighbor == end:
                         closed.append(passage)
                     else:
                         open.append(passage)
