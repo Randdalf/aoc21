@@ -2,19 +2,13 @@
 
 """Advent of Code 2021, Day 12"""
 
-from collections import defaultdict
-
 from aoc import solve
 
 
 class Cave:
     def __init__(slf, name):
-        slf.name = name
         slf.big = name.isupper()
         slf.neighbors = []
-
-    def __repr__(slf):
-        return slf.name
 
 
 def parse(data):
