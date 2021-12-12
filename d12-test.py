@@ -45,7 +45,7 @@ pj-fs
 start-RW"""
 
 
-class PassagesTests(unittest.TestCase):
+class PassagesOnceTests(unittest.TestCase):
     def test_example1(slf):
         slf.assertEqual(passages(parse(example1)), 10)
 
@@ -54,6 +54,18 @@ class PassagesTests(unittest.TestCase):
 
     def test_example3(slf):
         slf.assertEqual(passages(parse(example3)), 226)
+
+
+class PassagesTwiceTests(unittest.TestCase):
+    def test_example1(slf):
+        slf.assertEqual(passages(parse(example1), None), 36)
+
+    def test_example2(slf):
+        slf.assertEqual(passages(parse(example2), None), 103)
+
+    def test_example3(slf):
+        slf.assertEqual(passages(parse(example3), None), 3509)
+
 
 
 if __name__ == "__main__":

@@ -2,6 +2,8 @@
 
 """Advent of Code 2021, Day 12"""
 
+from collections import defaultdict
+
 from aoc import solve
 
 
@@ -28,16 +30,22 @@ def parse(data):
     return caves
 
 
-def passages(caves):
+def passages(caves, slot='unused'):
     start = caves['start']
-    prev = [([start], {start})]
+    prev = [([start], {start}, slot)]
     closed = []
     while len(prev) > 0:
         open = []
-        for path, visited in prev:
+        for path, visited, slot in prev:
             for neighbor in path[-1].neighbors:
-                if neighbor.big or neighbor not in visited:
-                    passage = (path + [neighbor], visited | {neighbor})
+                passage = None
+                if neighbor.big:
+                    passage = (path + [neighbor], visited, slot)
+                elif neighbor not in visited:
+                    passage = (path + [neighbor], visited | {neighbor}, slot)
+                elif neighbor != start and slot is None:
+                    passage = (path + [neighbor], visited | {neighbor}, neighbor)
+                if passage:
                     if neighbor.name == 'end':
                         closed.append(passage)
                     else:
@@ -46,7 +54,5 @@ def passages(caves):
     return len(closed)
 
 
-
-
 if __name__ == "__main__":
-    solve(12, parse, passages)
+    solve(12, parse, passages, lambda x: passages(x, None))
