@@ -26,9 +26,14 @@ CC -> N
 CN -> C"""
 
 
-class CommonElementsTests(unittest.TestCase):
+class CommonElements10Tests(unittest.TestCase):
     def test_example1(slf):
-        slf.assertEqual(common_elements(parse(example1)), 1588)
+        slf.assertEqual(common_elements(parse(example1), 10), 1588)
+
+
+class CommonElements40Tests(unittest.TestCase):
+    def test_example1(slf):
+        slf.assertEqual(common_elements(parse(example1), 40), 2188189693529)
 
 
 if __name__ == "__main__":

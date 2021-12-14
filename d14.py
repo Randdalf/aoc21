@@ -2,7 +2,7 @@
 
 """Advent of Code 2021, Day 14"""
 
-from collections import Counter
+from collections import Counter, defaultdict
 
 from aoc import solve
 
@@ -28,13 +28,27 @@ def step(polymer, rules):
     return result
 
 
-def common_elements(manual, steps=10):
+def count_elements(a, b, rules, cache, depth):
+    key = (a, b, depth)
+    if key in cache:
+        return cache[key]
+    e = rules[(a, b)]
+    counts = Counter(e)
+    if depth > 1:
+        counts.update(count_elements(a, e, rules, cache, depth - 1))
+        counts.update(count_elements(e, b, rules, cache, depth - 1))
+    cache[key] = counts
+    return counts
+
+
+def common_elements(manual, steps):
     polymer, rules = manual
-    for i in range(steps):
-        polymer = step(polymer, rules)
+    cache = {}
     counts = Counter(polymer)
+    for a, b in zip(polymer, polymer[1:]):
+        counts.update(count_elements(a, b, rules, cache, steps))
     return max(counts.values()) - min(counts.values())
 
 
 if __name__ == "__main__":
-    solve(14, parse, common_elements)
+    solve(14, parse, lambda x: common_elements(x, 10), lambda x: common_elements(x, 40))
