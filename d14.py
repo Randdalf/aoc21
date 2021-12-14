@@ -17,17 +17,6 @@ def parse(data):
     return list(parts[0]), dict(parse_rule(rule) for rule in parts[1].split('\n'))
 
 
-def step(polymer, rules):
-    result = []
-    polymer.reverse()
-    while len(polymer) > 1:
-        a = polymer.pop()
-        result.append(a)
-        result.append(rules[(a, polymer[-1])])
-    result.extend(polymer)
-    return result
-
-
 def count_elements(a, b, rules, cache, depth):
     key = (a, b, depth)
     if key in cache:
