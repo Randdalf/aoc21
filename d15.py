@@ -17,6 +17,7 @@ dirs = [
 class Cavern:
     def __init__(slf, risk, size):
         slf.risk = risk
+        slf.size = size
         slf.goal = Vec2(size-1, size-1)
 
 
@@ -51,7 +52,17 @@ def parse(data):
     return Cavern(risk, len(rows))
 
 
-def lowest_risk(cavern):
+def lowest_risk(cavern, repeat):
+    if repeat > 1:
+        risk = {}
+        for ry in range(repeat):
+            for rx in range(repeat):
+                offset = Vec2(rx, ry) * cavern.size
+                inc = rx + ry
+                for pos in cavern.risk.keys():
+                    risk[offset + pos] = (cavern.risk[pos] - 1 + inc) % 9 + 1
+        cavern = Cavern(risk, cavern.size * repeat)
+
     def goal(node):
         return node.pos == cavern.goal
 
@@ -60,4 +71,4 @@ def lowest_risk(cavern):
 
 
 if __name__ == "__main__":
-    solve(15, parse, lowest_risk)
+    solve(15, parse, lambda x: lowest_risk(x, 1), lambda x: lowest_risk(x, 5))

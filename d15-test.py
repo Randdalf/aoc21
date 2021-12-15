@@ -18,9 +18,14 @@ example1 = """1163751742
 2311944581"""
 
 
-class LowestRiskTests(unittest.TestCase):
+class LowestRisk1Tests(unittest.TestCase):
     def test_example1(slf):
-        slf.assertEqual(lowest_risk(parse(example1)), 40)
+        slf.assertEqual(lowest_risk(parse(example1), 1), 40)
+
+
+class LowestRisk5Tests(unittest.TestCase):
+    def test_example1(slf):
+        slf.assertEqual(lowest_risk(parse(example1), 5), 315)
 
 
 if __name__ == "__main__":
