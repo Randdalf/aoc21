@@ -73,19 +73,18 @@ def evaluate(bits):
     type_id = number(bits, 3)
     if type_id == 4:
         return literal(bits)
+    operands = []
+    if number(bits, 1):
+        for i in range(number(bits, 11)):
+            operands.append(evaluate(bits))
     else:
-        operands = []
-        if number(bits, 1):
-            for i in range(number(bits, 11)):
-                operands.append(evaluate(bits))
-        else:
-            subs = take(bits, number(bits, 15))
-            while True:
-                try:
-                    operands.append(evaluate(subs))
-                except RuntimeError:
-                    break
-        return ops[type_id](operands)
+        subs = take(bits, number(bits, 15))
+        while True:
+            try:
+                operands.append(evaluate(subs))
+            except RuntimeError:
+                break
+    return ops[type_id](operands)
 
 
 if __name__ == "__main__":
