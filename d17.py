@@ -40,7 +40,7 @@ def parse(data):
 def launch(tmin, tmax, vel):
     steps = []
     probe = Probe(vel)
-    while probe.pos.x <= tmax.x and probe.pos.y >= tmax.y:
+    while probe.pos.x <= tmax.x and probe.pos.y >= tmin.y:
         steps.append(probe.step())
         if probe.within(tmin, tmax):
             return steps
@@ -48,16 +48,29 @@ def launch(tmin, tmax, vel):
 
 
 def apex_y(target):
-    tmin, tmax = target
     apex = 0
-    for vy in range(1, 300):
-        for vx in range(1, 10):
-            steps = launch(tmin, tmax, Vec2(vx, vy))
+    tmin, tmax = target
+    for vy in range(tmin.y, 300):
+        for vx in range(1, tmax.x+1):
+            steps = launch(*target, Vec2(vx, vy))
             if steps is None:
                 continue
             apex = max(max(pos.y for pos in steps), apex)
     return apex
 
 
+def initial_v(target):
+    vels = []
+    tmin, tmax = target
+    for vy in range(tmin.y, 300):
+        for vx in range(1, tmax.x+1):
+            vel = Vec2(vx, vy)
+            steps = launch(*target, vel)
+            if steps is None:
+                continue
+            vels.append(vel)
+    return len(vels)
+
+
 if __name__ == "__main__":
-    solve(17, parse, apex_y)
+    solve(17, parse, apex_y, initial_v)
