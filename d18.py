@@ -37,11 +37,11 @@ class RegularNumber:
 
 class SnailfishNumber:
     def __init__(slf, left, right):
-        slf.left = deepcopy(left)
-        slf.right = deepcopy(right)
+        slf.left = left
+        slf.right = right
 
     def __add__(slf, otr):
-        sum = SnailfishNumber(slf, otr)
+        sum = SnailfishNumber(deepcopy(slf), deepcopy(otr))
         sum.reduce()
         return sum
 
