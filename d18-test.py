@@ -4,7 +4,7 @@
 
 import unittest
 
-from d18 import parse, final_sum
+from d18 import parse, final_sum, largest_mag
 
 example1 = """[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
 [[[5,[2,8]],4],[5,[[9,9],0]]]
@@ -21,6 +21,11 @@ example1 = """[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
 class FinalSumTests(unittest.TestCase):
     def test_example1(slf):
         slf.assertEqual(final_sum(parse(example1)), 4140)
+
+
+class LargestMagTests(unittest.TestCase):
+    def test_example1(slf):
+        slf.assertEqual(largest_mag(parse(example1)), 3993)
 
 
 if __name__ == "__main__":

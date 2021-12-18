@@ -2,6 +2,9 @@
 
 """Advent of Code 2021, Day 18"""
 
+from copy import deepcopy
+from itertools import permutations
+
 from aoc import solve
 
 
@@ -34,8 +37,8 @@ class RegularNumber:
 
 class SnailfishNumber:
     def __init__(slf, left, right):
-        slf.left = left
-        slf.right = right
+        slf.left = deepcopy(left)
+        slf.right = deepcopy(right)
 
     def __add__(slf, otr):
         sum = SnailfishNumber(slf, otr)
@@ -109,5 +112,9 @@ def final_sum(homework):
     return sum(homework[1:], homework[0]).magnitude
 
 
+def largest_mag(homework):
+    return max((a+b).magnitude for a, b in permutations(homework, 2))
+
+
 if __name__ == "__main__":
-    solve(18, parse, final_sum)
+    solve(18, parse, final_sum, largest_mag)
