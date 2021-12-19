@@ -42,6 +42,10 @@ def sub(c1, c2):
     return tuple(x1 - x2 for x1, x2 in zip(c1, c2))
 
 
+def manhattan(c1, c2):
+    return sum(abs(x1 - x2) for x1, x2 in zip(c1, c2))
+
+
 def find_offset(u_coords, k_coords):
     for i, j in product(range(len(u_coords)), range(len(k_coords))):
         u_basis = u_coords[i]
@@ -53,7 +57,7 @@ def find_offset(u_coords, k_coords):
     return None
 
 
-def beacons(report):
+def match_scanners(report):
     rotated = [{r: [rotate(c, r) for c in coords] for r in rotations()} for coords in report]
     unknown = list(range(1, len(report)))
     known = {0: ((0, 0, 0), (0, 0, 0))}
@@ -69,8 +73,17 @@ def beacons(report):
                 break
         if u not in known:
             unknown.append(u)
-    return len(beacons)
+    return beacons, known
+
+
+def beacons(report):
+    return len(match_scanners(report)[0])
+
+
+def largest_dist(report):
+    known = match_scanners(report)[1]
+    return max(manhattan(a, b) for a, b in combinations((x[1] for x in known.values()), 2))
 
 
 if __name__ == "__main__":
-    solve(19, parse, beacons)
+    solve(19, parse, beacons, largest_dist)

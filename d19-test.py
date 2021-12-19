@@ -4,7 +4,7 @@
 
 import unittest
 
-from d19 import parse, beacons
+from d19 import parse, beacons, largest_dist
 
 example1 = """--- scanner 0 ---
 404,-588,-901
@@ -147,6 +147,11 @@ example1 = """--- scanner 0 ---
 class BeaconsTests(unittest.TestCase):
     def test_example1(slf):
         slf.assertEqual(beacons(parse(example1)), 79)
+
+
+class LargestDistTests(unittest.TestCase):
+    def test_example1(slf):
+        slf.assertEqual(largest_dist(parse(example1)), 3621)
 
 
 if __name__ == "__main__":
