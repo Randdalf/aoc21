@@ -5,7 +5,6 @@
 from collections import defaultdict
 
 from aoc import solve
-from vec2 import Vec2
 
 
 def parse(data):
@@ -14,20 +13,20 @@ def parse(data):
     image = defaultdict(lambda: False)
     for y, row in enumerate(parts[1].split('\n')):
         for x, col in enumerate(row):
-            image[Vec2(x, y)] = col == '#'
+            image[(x, y)] = col == '#'
     return algorithm, image
 
 
-def kernel(pos):
+def kernel(x, y):
     for oy in range(1, -2, -1):
         for ox in range(1, -2, -1):
-            yield Vec2(pos.x + ox, pos.y + oy)
+            yield (x + ox, y + oy)
 
 
 def enhance(algorithm, image, default):
     enhanced = defaultdict(lambda: default)
-    for pos in {k for pos in image.keys() for k in kernel(pos)}:
-        index = sum(int(image[k]) << i for i, k in enumerate(kernel(pos)))
+    for pos in {k for pos in image.keys() for k in kernel(*pos)}:
+        index = sum(int(image[k]) << i for i, k in enumerate(kernel(*pos)))
         enhanced[pos] = algorithm[index]
     return enhanced
 
