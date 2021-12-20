@@ -32,7 +32,7 @@ def enhance(algorithm, image, default):
     return enhanced
 
 
-def lit_pixels(input, steps=2):
+def lit_pixels(input, steps):
     algorithm, image = input
     for step in range(steps):
         image = enhance(algorithm, image, algorithm[0] and step % 2 == 0)
@@ -40,4 +40,4 @@ def lit_pixels(input, steps=2):
 
 
 if __name__ == "__main__":
-    solve(20, parse, lit_pixels)
+    solve(20, parse, lambda x: lit_pixels(x, 2), lambda x: lit_pixels(x, 50))

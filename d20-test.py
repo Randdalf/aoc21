@@ -16,9 +16,14 @@ example1 = """..#.#..#####.#.#.#.###.##.....###.##.#..###.####..#####..#....#..#
 ..###"""
 
 
-class LitPixelsTests(unittest.TestCase):
+class LitPixels2Tests(unittest.TestCase):
     def test_example1(slf):
-        slf.assertEqual(lit_pixels(parse(example1)), 35)
+        slf.assertEqual(lit_pixels(parse(example1), 2), 35)
+
+
+class LitPixels50Tests(unittest.TestCase):
+    def test_example1(slf):
+        slf.assertEqual(lit_pixels(parse(example1), 50), 3351)
 
 
 if __name__ == "__main__":
