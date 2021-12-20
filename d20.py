@@ -2,40 +2,47 @@
 
 """Advent of Code 2021, Day 20"""
 
-from collections import defaultdict
-
 from aoc import solve
 
 
 def parse(data):
     parts = data.split('\n\n')
     algorithm = [x == '#' for x in parts[0]]
-    image = defaultdict(lambda: False)
+    image = set()
     for y, row in enumerate(parts[1].split('\n')):
         for x, col in enumerate(row):
-            image[(x, y)] = col == '#'
+            if col == '#':
+                image.add((x, y))
     return algorithm, image
 
 
 def kernel(x, y):
-    for oy in range(1, -2, -1):
-        for ox in range(1, -2, -1):
-            yield (x + ox, y + oy)
+    yield (x + 1, y + 1)
+    yield (x, y + 1)
+    yield (x - 1, y + 1)
+    yield (x + 1, y)
+    yield (x, y)
+    yield (x - 1, y)
+    yield (x + 1, y - 1)
+    yield (x, y - 1)
+    yield (x - 1, y - 1)
 
 
-def enhance(algorithm, image, default):
-    enhanced = defaultdict(lambda: default)
-    for pos in {k for pos in image.keys() for k in kernel(*pos)}:
-        index = sum(int(image[k]) << i for i, k in enumerate(kernel(*pos)))
-        enhanced[pos] = algorithm[index]
+def enhance(algorithm, image, p_in, p_out):
+    enhanced = set()
+    for pos in {k for pos in image for k in kernel(*pos)}:
+        index = sum(int((k in image) == p_in) << i for i, k in enumerate(kernel(*pos)))
+        if algorithm[index] == p_out:
+            enhanced.add(pos)
     return enhanced
 
 
 def lit_pixels(input, steps):
     algorithm, image = input
+    finite = not algorithm[0]
     for step in range(steps):
-        image = enhance(algorithm, image, algorithm[0] and step % 2 == 0)
-    return sum(int(x) for x in image.values())
+        image = enhance(algorithm, image, finite or step % 2 == 0, finite or step % 2 == 1)
+    return len(image)
 
 
 if __name__ == "__main__":
