@@ -30,16 +30,11 @@ def practice_dirac_dice(state, spaces=10, rolls=3, sides=100, win_score=1000):
         turn = 1 - turn
 
 
-quantum_die = Counter(
-    3 + i + j + k for i, j, k in product(range(3), range(3), range(3))
-)
-
-
 def diracursive_0(key, cache_0, cache_1):
     if key in cache_0:
         return cache_0[key]
     wins = [0, 0]
-    for moves, n in quantum_die.items():
+    for moves, n in quantum_die:
         state = (key[0] + moves) % 10
         score = key[2] + 1 + state
         if score >= 21:
@@ -57,7 +52,7 @@ def diracursive_1(key, cache_0, cache_1):
     if key in cache_1:
         return cache_1[key]
     wins = [0, 0]
-    for moves, n in quantum_die.items():
+    for moves, n in quantum_die:
         state = (key[1] + moves) % 10
         score = key[3] + 1 + state
         if score >= 21:
@@ -71,6 +66,10 @@ def diracursive_1(key, cache_0, cache_1):
 
 
 def real_dirac_dice(state):
+    global quantum_die
+    quantum_die = list(Counter(
+        3 + i + j + k for i, j, k in product(range(3), range(3), range(3))
+    ).items())
     return max(diracursive_0((*state, 0, 0), {}, {}))
 
 
