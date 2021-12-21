@@ -35,44 +35,43 @@ quantum_die = Counter(
 )
 
 
-def diracursive_0(key, cache):
-    if key in cache:
-        return cache[key]
+def diracursive_0(key, cache_0, cache_1):
+    if key in cache_0:
+        return cache_0[key]
+    wins = [0, 0]
+    for moves, n in quantum_die.items():
+        state = (key[0] + moves) % 10
+        score = key[2] + 1 + state
+        if score >= 21:
+            wins[0] += n
+        else:
+            result = diracursive_1((state, key[1], score, key[3]), cache_0, cache_1)
+            wins[0] += n * result[0]
+            wins[1] += n * result[1]
+    wins = tuple(wins)
+    cache_0[key] = wins
+    return wins
+
+
+def diracursive_1(key, cache_0, cache_1):
+    if key in cache_1:
+        return cache_1[key]
     wins = [0, 0]
     for moves, n in quantum_die.items():
         state = (key[1] + moves) % 10
         score = key[3] + 1 + state
         if score >= 21:
-            wins[0] += n
-        else:
-            result = diracursive_1((1, state, key[2], score, key[4]), cache)
-            wins[0] += n * result[0]
-            wins[1] += n * result[1]
-    wins = tuple(wins)
-    cache[key] = wins
-    return wins
-
-
-def diracursive_1(key, cache):
-    if key in cache:
-        return cache[key]
-    wins = [0, 0]
-    for moves, n in quantum_die.items():
-        state = (key[2] + moves) % 10
-        score = key[4] + 1 + state
-        if score >= 21:
             wins[1] += n
         else:
-            result = diracursive_0((0, key[1], state, key[3], score), cache)
+            result = diracursive_0((key[0], state, key[2], score), cache_0, cache_1)
             wins[0] += n * result[0]
             wins[1] += n * result[1]
-    wins = tuple(wins)
-    cache[key] = wins
+    cache_1[key] = wins
     return wins
 
 
 def real_dirac_dice(state):
-    return max(diracursive_0((0, *state, 0, 0), {}))
+    return max(diracursive_0((*state, 0, 0), {}, {}))
 
 
 if __name__ == "__main__":
