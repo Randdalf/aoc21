@@ -43,8 +43,8 @@ def diracursive(key, cache):
         turn = key[0]
         state = list(key[1:3])
         scores = list(key[3:5])
-        state[turn] += moves
-        scores[turn] += 1 + state[turn] % 10
+        state[turn] = (state[turn] + moves) % 10
+        scores[turn] += 1 + state[turn]
         if scores[turn] >= 21:
             wins[turn] += n
         else:
