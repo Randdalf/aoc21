@@ -43,7 +43,6 @@ def diracursive_0(key, cache_0, cache_1):
             result = diracursive_1((state, key[1], score, key[3]), cache_0, cache_1)
             wins[0] += n * result[0]
             wins[1] += n * result[1]
-    wins = tuple(wins)
     cache_0[key] = wins
     return wins
 
