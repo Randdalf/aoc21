@@ -35,20 +35,35 @@ quantum_die = Counter(
 )
 
 
-def diracursive(key, cache):
+def diracursive_0(key, cache):
     if key in cache:
         return cache[key]
     wins = [0, 0]
     for moves, n in quantum_die.items():
-        turn = key[0]
-        state = list(key[1:3])
-        scores = list(key[3:5])
-        state[turn] = (state[turn] + moves) % 10
-        scores[turn] += 1 + state[turn]
-        if scores[turn] >= 21:
-            wins[turn] += n
+        state = (key[1] + moves) % 10
+        score = key[3] + 1 + state
+        if score >= 21:
+            wins[0] += n
         else:
-            result = diracursive((1 - turn, *state, *scores), cache)
+            result = diracursive_1((1, state, key[2], score, key[4]), cache)
+            wins[0] += n * result[0]
+            wins[1] += n * result[1]
+    wins = tuple(wins)
+    cache[key] = wins
+    return wins
+
+
+def diracursive_1(key, cache):
+    if key in cache:
+        return cache[key]
+    wins = [0, 0]
+    for moves, n in quantum_die.items():
+        state = (key[2] + moves) % 10
+        score = key[4] + 1 + state
+        if score >= 21:
+            wins[1] += n
+        else:
+            result = diracursive_0((0, key[1], state, key[3], score), cache)
             wins[0] += n * result[0]
             wins[1] += n * result[1]
     wins = tuple(wins)
@@ -57,7 +72,7 @@ def diracursive(key, cache):
 
 
 def real_dirac_dice(state):
-    return max(diracursive((0, state[0], state[1], 0, 0), {}))
+    return max(diracursive_0((0, *state, 0, 0), {}))
 
 
 if __name__ == "__main__":
