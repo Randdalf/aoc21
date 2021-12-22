@@ -2,24 +2,52 @@
 
 """Advent of Code 2021, Day 22"""
 
+from functools import reduce
+from itertools import product
+from operator import mul
 import re
 
 from aoc import solve
 
 
 class Cuboid:
-    def __init__(slf, low, high):
-        slf.low = low
-        slf.high = high
+    def __init__(slf, lo, hi):
+        slf.lo = lo
+        slf.hi = hi
 
-    def cubes(slf):
-        for z in range(slf.low[2], 1 + slf.high[2]):
-            for y in range(slf.low[1], 1 + slf.high[1]):
-                for x in range(slf.low[0], 1 + slf.high[0]):
-                    yield x, y, z
+    @property
+    def volume(slf):
+        return reduce(mul, (1 + h - l for l, h in zip(slf.lo, slf.hi)))
+
+    def intersects(slf, otr):
+        for axis in range(3):
+            if slf.lo[axis] > otr.hi[axis] or otr.lo[axis] > slf.hi[axis]:
+                return False
+        return True
+
+    def contains(slf, otr):
+        return all(slf.lo[axis] <= otr.lo[axis] and slf.hi[axis] >= otr.hi[axis] for axis in range(3))
+
+    def carve(slf, otr):
+        overlap_lo = tuple(max(s, o) for s, o in zip(slf.lo, otr.lo))
+        overlap_hi = tuple(min(s, o) for s, o in zip(slf.hi, otr.hi))
+        edges = [
+            otr.lo,
+            overlap_lo,
+            tuple(1 + x for x in overlap_hi),
+            tuple(1 + x for x in otr.hi)
+        ]
+        for i, j, k in product(range(3), range(3), range(3)):
+            if i == 1 and j == 1 and k == 1:
+                continue
+            lo = (edges[i][0], edges[j][1], edges[k][2])
+            hi = (edges[i+1][0] - 1, edges[j+1][1] - 1, edges[k+1][2] - 1)
+            if any(lo[axis] > hi[axis] for axis in range(3)):
+                continue
+            yield Cuboid(lo, hi)
 
     def __repr__(slf):
-        return f'{slf.low} -> {slf.high}'
+        return f'{slf.lo} -> {slf.hi}'
 
 
 def parse_cuboid(data):
@@ -36,25 +64,25 @@ def parse(data):
     return [parse_step(line) for line in data.split('\n')]
 
 
-def intersects(a, b):
-    for axis in range(3):
-        if a.low[axis] > b.high[axis] or b.low[axis] > a.high[axis]:
-            return False
-    return True
-
-
-def init(steps):
-    area = Cuboid((-50, -50, -50), (50, 50, 50))
-    on = set()
+def reboot(steps, init):
+    init_area = Cuboid((-50, -50, -50), (50, 50, 50))
+    on = []
     for switch, cuboid in steps:
-        if not intersects(cuboid, area):
+        if init and not cuboid.intersects(init_area):
             continue
+        next = []
+        for c in on:
+            if cuboid.contains(c):
+                continue
+            elif cuboid.intersects(c):
+                next.extend(cuboid.carve(c))
+            else:
+                next.append(c)
         if switch:
-            on.update(cuboid.cubes())
-        else:
-            on.difference_update(cuboid.cubes())
-    return len(on)
+            next.append(cuboid)
+        on = next
+    return sum(c.volume for c in on)
 
 
 if __name__ == "__main__":
-    solve(22, parse, init)
+    solve(22, parse, lambda x: reboot(x, True), lambda x: reboot(x, False))
