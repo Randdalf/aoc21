@@ -102,7 +102,7 @@ class RebootTests(unittest.TestCase):
 
     def test_example2(slf):
         slf.assertEqual(reboot(parse(example2), True), 590784)
-    #
+
     def test_example3(slf):
         slf.assertEqual(reboot(parse(example3), False), 2758514936282235)
 
