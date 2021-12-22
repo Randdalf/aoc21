@@ -5,7 +5,6 @@
 from functools import reduce
 from itertools import product
 from operator import mul
-import re
 
 from aoc import solve
 
