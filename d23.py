@@ -67,15 +67,17 @@ class Node:
         }
         for i, (type, stop) in enumerate(slf.pods):
             if stop > 0:
+                if stop in dests[type] and type not in polluted:
+                    continue
                 for hallway in range(-1, -8, -1):
                     if slf._blocked(stop, hallway, occupied):
                         continue
                     yield slf._new(i, type, hallway)
             elif type not in polluted:
-                for dest in dests[type]:
-                    if slf._blocked(stop, dest, occupied):
-                        continue
-                    yield slf._new(i, type, dest)
+                dest = max(dest for dest in dests[type] if dest not in occupied)
+                if slf._blocked(stop, dest, occupied):
+                    continue
+                yield slf._new(i, type, dest)
 
     def dist(slf, neighbor):
         for (a_t, a_s), (b_t, b_s) in zip(slf.pods, neighbor.pods):
@@ -136,8 +138,6 @@ def least_energy(data, unfold=False):
 
     # Run the A* path finding algorithm over the graph of all amphipods
     # alternating between hallways and destination rooms.
-    node = Node(pods, dists, blockers)
-
     def goal(node):
         return all(pos in dests[type] for type, pos in node.pods)
 
@@ -149,7 +149,8 @@ def least_energy(data, unfold=False):
             estimate += energy[type] * dists[(stop, ideal[type])]
         return estimate
 
-    return path_length(astar(node, goal, h))
+    start = Node(pods, dists, blockers)
+    return path_length(astar(start, goal, h))
 
 
 if __name__ == "__main__":
