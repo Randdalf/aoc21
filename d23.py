@@ -6,21 +6,8 @@ from aoc import solve
 from pathfind import bfs, astar, path_length, reconstruct_path
 
 energy = {'A': 1, 'B': 10, 'C': 100, 'D': 1000}
-stops = {
-    # Hallways
-    (1, 1): -1, (2, 1): -2, (4, 1): -3, (6, 1): -4,
-    (8, 1): -5, (10, 1): -6, (11, 1): -7,
-    # Rooms
-    (3, 2): 1, (3, 3): 2, (5, 2): 3, (5, 3): 4,
-    (7, 2): 5, (7, 3): 6, (9, 2): 7, (9, 3): 8
-}
-dests = {
-    'A': {1, 2},
-    'B': {3, 4},
-    'C': {5, 6},
-    'D': {7, 8}
-}
-inv_dests = {d: t for t, ds in dests.items() for d in ds}
+unfolded = """  #D#C#B#A#
+  #D#B#A#C#"""
 
 
 class PrepassNode:
@@ -99,19 +86,37 @@ class Node:
 def parse(data):
     pods = []
     walls = set()
+    dests = {type: set() for type in 'ABCD'}
+    stops = {
+        # Hallways are negative
+        (1, 1): -1, (2, 1): -2, (4, 1): -3, (6, 1): -4,
+        (8, 1): -5, (10, 1): -6, (11, 1): -7
+    }
+    cols = {3: 'A', 5: 'B', 7: 'C', 9: 'D'}
     for y, line in enumerate(data.split('\n')):
         for x, cell in enumerate(line):
             pos = (x, y)
             if cell == '#':
                 walls.add(pos)
-            elif pos in stops and stops[pos] > 0:
-                pods.append((cell, stops[pos]))
+            elif cell in 'ABCD':
+                stop = len(stops) - 6
+                stops[pos] = stop
+                dests[cols[x]].add(stop)
+                pods.append((cell, stop))
     pods.sort()
-    return tuple(pods), walls
+    return tuple(pods), walls, stops, dests
 
 
-def least_energy(input):
-    pods, walls = input
+def least_energy(data, unfold=False):
+    if unfold:
+        data = data.split('\n')
+        data = data[:3] + unfolded.split('\n') + data[3:]
+        data = '\n'.join(data)
+
+    global dests, inv_dests
+    pods, walls, stops, dests = parse(data)
+    inv_dests = {d: t for t, ds in dests.items() for d in ds}
+    ideal = {t: min(ds) for t, ds in dests.items()}
 
     # Precompute the shortest path between each stopping point, and the
     # potential obstructions along the way.
@@ -138,7 +143,6 @@ def least_energy(input):
 
     def h(node):
         estimate = 0
-        ideal = {'A': 1, 'B': 3, 'C': 5, 'D': 7}
         for type, stop in node.pods:
             if stop in dests[type]:
                 continue
@@ -149,4 +153,4 @@ def least_energy(input):
 
 
 if __name__ == "__main__":
-    solve(23, parse, least_energy)
+    solve(23, lambda x: x, lambda x: least_energy(x, False), lambda x: least_energy(x, True))
