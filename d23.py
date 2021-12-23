@@ -3,7 +3,7 @@
 """Advent of Code 2021, Day 23"""
 
 from aoc import solve
-from pathfind import bfs, dijkstra, path_length, reconstruct_path
+from pathfind import bfs, astar, path_length, reconstruct_path
 
 energy = {'A': 1, 'B': 10, 'C': 100, 'D': 1000}
 stops = {
@@ -129,14 +129,23 @@ def least_energy(input):
             else:
                 blockers[key] = set()
 
-    # Run Dijksta's algorithm over the graph of all amphipods alternating
-    # between hallways and destination rooms.
+    # Run the A* path finding algorithm over the graph of all amphipods
+    # alternating between hallways and destination rooms.
     node = Node(pods, dists, blockers)
 
     def goal(node):
         return all(pos in dests[type] for type, pos in node.pods)
 
-    return path_length(dijkstra(node, goal))
+    def h(node):
+        estimate = 0
+        ideal = {'A': 1, 'B': 3, 'C': 5, 'D': 7}
+        for type, stop in node.pods:
+            if stop in dests[type]:
+                continue
+            estimate += energy[type] * dists[(stop, ideal[type])]
+        return estimate
+
+    return path_length(astar(node, goal, h))
 
 
 if __name__ == "__main__":
