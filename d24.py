@@ -2,8 +2,6 @@
 
 """Advent of Code 2021, Day 24"""
 
-from itertools import product
-
 from aoc import solve
 
 
