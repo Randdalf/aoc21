@@ -32,5 +32,9 @@ def model_high(params):
     return find_model(params, list(range(9, 0, -1)), [], 0)
 
 
+def model_low(params):
+    return find_model(params, list(range(1, 10)), [], 0)
+
+
 if __name__ == "__main__":
-    solve(24, parse, model_high)
+    solve(24, parse, model_high, model_low)
